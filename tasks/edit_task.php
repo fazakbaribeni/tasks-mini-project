@@ -1,24 +1,31 @@
 <?php
 include("../includes/db.php");
+include("../tasks/Tasks.php");
 
 $title = '';
 $description= '';
 
-if  (isset($_GET['id'])) {
+if  (isset($_GET['id']) && $_GET['id'] == '') {
+    $task = new Tasks($dbh);
     $id = $_GET['id'];
-    $sql  = $dbh->prepare("SELECT * FROM tasks WHERE id=?");
-    $sql->execute([$id]);
-    $data = $sql->fetch(PDO::FETCH_ASSOC);
-
+    $data = $task->getTaskById($id);
 }
 
-if (isset($_POST['update']) && !empty($_POST['id'])) {
+if (isset($_POST['id']) && !empty($_POST['id'])) {
 
-    $update = $dbh->prepare("UPDATE tasks set title = ?, description = ? WHERE id=?");
-    $update->execute([$_POST['title'], $_POST['description'], $_POST['id']]);
+
+    $taskUpdate = new Tasks($dbh);
+
+    $arrayUpdate = [
+        "title"       => $_POST['title'],
+        "id"          => $_POST['id'],
+        "description" => $_POST['description']
+    ];
+    $taskUpdate->updateTask($arrayUpdate);
     $_SESSION['message'] = 'Task Updated Successfully';
     $_SESSION['message_type'] = 'success';
     header('Location: ../index.php');
+    die();
 }
 
 ?>

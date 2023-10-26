@@ -42,18 +42,21 @@
                     <tbody>
 
                     <?php
-                    $sql = $dbh->prepare("SELECT * FROM tasks ORDER BY id DESC");
-                    $sql->execute();
-                    while($row = $sql->fetch(PDO::FETCH_ASSOC)) { ?>
+
+                     include "tasks/Tasks.php";
+                     $tasks = new Tasks($dbh);
+                     $all_tasks = $tasks->getAllTasks();
+
+                    foreach($all_tasks as $task) { ?>
                         <tr>
-                            <td><?php echo e($row['title']); ?></td>
-                            <td><?php echo e($row['description']); ?></td>
-                            <td><?php echo $row['date_added']; ?></td>
+                            <td><?php echo e($task['title']); ?></td>
+                            <td><?php echo e($task['description']); ?></td>
+                            <td><?php echo $task['date_added']; ?></td>
                             <td>
-                                <a href="tasks/edit_task.php?id=<?php echo $row['id']?>" class="btn btn-secondary">
+                                <a href="tasks/edit_task.php?id=<?php echo $task['id']?>" class="btn btn-secondary">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="#" id="<?php echo $row['id'] ?>" class="btn btn-danger deleteTask">
+                                <a href="#" id="<?php echo $task['id'] ?>" class="btn btn-danger deleteTask">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>
